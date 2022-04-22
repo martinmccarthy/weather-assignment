@@ -102,7 +102,8 @@ function App() {
           <option value={7}>7</option>
           <option value={8}>8</option>
           <option value={9}>9</option>
-          <option value={10}>10</option>*/}
+          <option value={10}>10</option>
+          adding this for heroku test*/}
         </select>
         <button type="button" onClick={doSearch}>Submit</button>
       </form>
