@@ -7,6 +7,8 @@ function App() {
   const [days, setDays] = useState(1);
   const [city, setCity] = useState("");
   const [cards, setCards] = useState([]);
+
+  var path = require('./Path.js');
   
   const cityHandler = (event) => {
     setCity(event.target.value);
@@ -14,6 +16,23 @@ function App() {
   const dayHandler = (event) => {
     setDays(event.target.value);
   };
+
+  async function saveForecast() {
+    var payload = {city: city, forecast: cards};
+    var _payload = JSON.stringify(payload);
+    await axios({
+      method: 'post',
+      url: path.buildPath('/forecasts/add'),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: _payload
+    }).then(function (response) {
+      console.log(response);
+    }).catch(function (error) {
+      console.error(error);
+    });
+  }
 
   async function getCards() {
     var temp = [];
@@ -39,7 +58,6 @@ function App() {
       }
     });
     setCards(temp);
-    console.log(temp);
   }
 
   function doSearch() {
@@ -81,7 +99,7 @@ function App() {
           ))}
         </ul>
       </div>
-      
+      <br /><button type="button" onClick={saveForecast}>Save</button>
     </div>
   );
 }

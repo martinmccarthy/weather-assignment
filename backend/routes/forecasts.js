@@ -26,6 +26,7 @@ forecastRoute.route("/forecasts/:city").get(function (req, res) {
         });
 });
 
+// add a forecast to the db
 forecastRoute.route("/forecasts/add").post(function (req, res) {
     let connection = dbo.getDb();
     let submission = {
