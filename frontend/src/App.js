@@ -72,8 +72,8 @@ function App() {
                 <h1 id="cityName">{card.city}</h1>
                 <h1 id="cityRegion">{card.region}</h1>
                 <h1 id="date">{card.date}</h1>
-                <h1 id="avgTemp">{card.avg_temp}</h1>
-                <h1 id="tempRange">{card.min_temp} - {card.max_temp}</h1>
+                <h1 id="avgTemp">{card.avg_temp}°F</h1>
+                <h1 id="tempRange">{card.min_temp}°F - {card.max_temp}°F</h1>
                 <img id="conditionIcon" src={card.condition_icon} />
                 <h1 id="condition">{card.condition}</h1>
               </div>
