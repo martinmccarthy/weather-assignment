@@ -7,6 +7,8 @@ function App() {
   const [days, setDays] = useState(1);
   const [city, setCity] = useState("");
   const [cards, setCards] = useState([]);
+  const [search, setSearch] = useState("");
+  const [searchCards, setSearchCards] = useState([]);
 
   var path = require('./Path.js');
   
@@ -16,8 +18,12 @@ function App() {
   const dayHandler = (event) => {
     setDays(event.target.value);
   };
+  const searchHandler = (event) => {
+    setSearch(event.target.value);
+  };
 
   async function saveForecast() {
+    
     var payload = {city: city, forecast: cards};
     var _payload = JSON.stringify(payload);
     await axios({
@@ -27,11 +33,27 @@ function App() {
         'Content-Type': 'application/json'
       },
       data: _payload
-    }).then(function (response) {
+    }).then(function(response) {
       console.log(response);
-    }).catch(function (error) {
+    }).catch(function(error) {
       console.error(error);
     });
+  }
+
+  async function loadForecasts() {
+    await axios ({
+      method: 'get',
+      url: path.buildPath('/forecasts/' + search),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    }).then(function(response){
+      var res = response.data;
+      console.log(res);
+      setSearchCards(res.forecast);
+    }).catch(function(error) {
+      console.error(error);
+    })
   }
 
   async function getCards() {
@@ -66,6 +88,9 @@ function App() {
 
   return (
     <div className="App">
+      <div>
+
+      </div>
       <form>
         <input type="input" placeholder="Enter a city" value={city} onChange={cityHandler}/>
         <select name="days" onChange={dayHandler}>
@@ -99,7 +124,29 @@ function App() {
           ))}
         </ul>
       </div>
-      <br /><button type="button" onClick={saveForecast}>Save</button>
+      <div>
+        <br /><button type="button" onClick={saveForecast}>Save Forecast</button>
+        <br /><input type="input" placeholder="Search" value={search} onChange={searchHandler}/>
+        <button type="button" onClick={loadForecasts}>Load Forecasts</button>
+        <div id="resultContainer">
+          <ul className="resultList">
+            {searchCards.map((card) => (
+              <li className="listElement">
+                <div className="card">
+                  <h1 id="cityName">{card.city}</h1>
+                  <h1 id="cityRegion">{card.region}</h1>
+                  <h1 id="date">{card.date}</h1>
+                  <h1 id="avgTemp">{card.avg_temp}°F</h1>
+                  <h1 id="tempRange">{card.min_temp}°F - {card.max_temp}°F</h1>
+                  <img id="conditionIcon" src={card.condition_icon} />
+                  <h1 id="condition">{card.condition}</h1>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      
     </div>
   );
 }

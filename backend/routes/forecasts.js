@@ -17,7 +17,8 @@ forecastRoute.route("/forecasts").get(function(req, res) {
 
 // get one forecast based off user input of a city
 forecastRoute.route("/forecasts/:city").get(function (req, res) {
-    let connection = dbo.getDb();
+    console.log(req.params);
+    let connection = dbo.getDb("weather");
     let query = {city: req.params.city};
     connection.collection("forecasts")
         .findOne(query, function(err, result) {
