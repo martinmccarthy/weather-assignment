@@ -13,13 +13,12 @@
 .resultList {
   list-style: none;
   width: 100%;
-  margin: 0 auto;
-
 }
 .resultList li{
   display: inline;
   float: left;
   width: 20%;
+  margin-inline: 20px;
 }
 
 #resultContainer {
@@ -49,4 +48,53 @@
 #cityRegion {
   font-size: 2vh;
   margin-top: -3vh;
+}
+
+.input {
+  font-size: 20px;
+  padding: 5px;
+}
+
+.form {
+  position: relative;
+}
+
+.select {
+  height: 20px;
+  text-align: center;
+  padding: 5px;
+}
+
+.btn {
+  height: 30px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 20px;
+  width: 100px;
+}
+
+.daysBtn {
+  width: 50px;
+  height: 50px;
+  margin-inline: 50px;
+  border-radius: 50px;
+  border-style: none;
+  outline: 3px solid rgb(29, 176, 208);
+  color: black;
+  background-color: rgba(0, 0, 0, 0);
+  font-size: 20px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.daysBtn:hover {
+  background-color: rgb(29, 176, 208);
+  color: white;
+  transition: .5s;
+}
+
+.loadBtn {
+  height: 36px;
+  padding: 11px;
+  text-align: center;
 }

@@ -3,26 +3,25 @@ import {useState} from 'react';
 import axios from 'axios';
 
 function App() {
+  //states for app functionality
   const [days, setDays] = useState(1);
   const [city, setCity] = useState("");
   const [cards, setCards] = useState([]);
   const [search, setSearch] = useState("");
   const [searchCards, setSearchCards] = useState([]);
+  const [forecastSaved, setForecastSaved] = useState(false);
 
+  // used to set the path based on local host vs heroku
   var path = require('./Path.js');
   
   const cityHandler = (event) => {
     setCity(event.target.value);
-  };
-  const dayHandler = (event) => {
-    setDays(event.target.value);
   };
   const searchHandler = (event) => {
     setSearch(event.target.value);
   };
 
   async function saveForecast() {
-    
     var payload = {city: city, forecast: cards};
     var _payload = JSON.stringify(payload);
     await axios({
@@ -33,10 +32,11 @@ function App() {
       },
       data: _payload
     }).then(function(response) {
-      console.log(response);
+      setForecastSaved(true);
     }).catch(function(error) {
       console.error(error);
     });
+
   }
 
   async function loadForecasts() {
@@ -48,14 +48,33 @@ function App() {
       },
     }).then(function(response){
       var res = response.data;
-      console.log(res);
       setSearchCards(res.forecast);
+    }).catch(function(error) {
+      setSearchCards([]);
+      console.error(error);
+    })
+  }
+
+  async function deleteForecast() {
+    var payload = {city: search};
+    var _payload = JSON.stringify(payload);
+    console.log(_payload);
+    await axios ({
+      method: 'delete',
+      url: path.buildPath('/forecasts/delete'),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: _payload
+    }).then(function(response) {
+      setSearchCards([]);
     }).catch(function(error) {
       console.error(error);
     })
   }
 
   async function getCards() {
+    setForecastSaved(false);
     var temp = [];
     await axios({
       method: 'get',
@@ -77,40 +96,30 @@ function App() {
         }
         temp.push(dayInfo);
       }
+    }).catch(function(error) {
+      console.error(error);
+      setCards([]);
     });
     setCards(temp);
   }
 
-  function doSearch() {
-    getCards();
-  };
-
   return (
     <div className="App">
-      <div>
-
+      <div className="form">
+        <h1>Search a City:</h1>
+        <input type="input" placeholder="Enter a city" className="input" value={city} onChange={cityHandler}/>
+        <h1>Search the forecast for up to 3 days:</h1>
+        <button type="button" className="daysBtn" onClick={() => setDays(1)}>1</button>
+        <button type="button" className="daysBtn" onClick={() => setDays(2)}>2</button>
+        <button type="button" className="daysBtn" onClick={() => setDays(3)}>3</button>
       </div>
-      <form>
-        <input type="input" placeholder="Enter a city" value={city} onChange={cityHandler}/>
-        <select name="days" onChange={dayHandler}>
-          <option value={1}>1</option>
-          <option value={2}>2</option>
-          <option value={3}>3</option>
-          {/*<option value={4}>4</option>
-          <option value={5}>5</option>
-          <option value={6}>6</option>
-          <option value={7}>7</option>
-          <option value={8}>8</option>
-          <option value={9}>9</option>
-          <option value={10}>10</option>
-          */}
-        </select>
-        <button type="button" onClick={doSearch}>Submit</button>
-      </form>
+      <br />
+      <button type="button" className="btn" onClick={getCards}>Submit</button>
+      <br /><br />
       <div id="resultContainer">
         <ul className="resultList">
           {cards.map((card) => (
-            <li className="listElement">
+            <li className="listElement" >
               <div className="card">
                 <h1 id="cityName">{card.city}</h1>
                 <h1 id="cityRegion">{card.region}</h1>
@@ -124,10 +133,14 @@ function App() {
           ))}
         </ul>
       </div>
+      <br />
+      {cards.length > 0 && <button type="button" onClick={saveForecast}>Save Forecast</button>}
+      <br />
+      {forecastSaved && <label>Forecast Saved</label>}
       <div>
-        <br /><button type="button" onClick={saveForecast}>Save Forecast</button>
-        <br /><input type="input" placeholder="Search" value={search} onChange={searchHandler}/>
-        <button type="button" onClick={loadForecasts}>Load Forecasts</button>
+        <h1>Already saved a location? Look it up here!</h1>
+        <br /><input type="input" className="input" placeholder="Search" value={search} onChange={searchHandler}/>
+        <button type="button" className="loadBtn" onClick={loadForecasts}>Load Forecasts</button>
         <div id="resultContainer">
           <ul className="resultList">
             {searchCards.map((card) => (
@@ -145,6 +158,10 @@ function App() {
             ))}
           </ul>
         </div>
+        {searchCards.length > 0 && <div>
+          <h1>Don't need this forecast anymore?</h1>
+          <button onClick={deleteForecast}>Delete</button>
+        </div>}
       </div>
       
     </div>
