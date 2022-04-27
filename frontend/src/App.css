@@ -12,13 +12,12 @@
 
 .resultList {
   list-style: none;
-  width: 100%;
 }
 .resultList li{
-  display: inline;
-  float: left;
   width: 20%;
   margin-inline: 20px;
+  display: inline-block;
+
 }
 
 #resultContainer {

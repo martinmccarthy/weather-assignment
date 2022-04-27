@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "npm install && npm start",
+    "heroku-postbuild": "cd frontend && npm install && npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

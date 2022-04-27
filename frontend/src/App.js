@@ -10,6 +10,7 @@ function App() {
   const [search, setSearch] = useState("");
   const [searchCards, setSearchCards] = useState([]);
   const [forecastSaved, setForecastSaved] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(false);
 
   // used to set the path based on local host vs heroku
   var path = require('./Path.js');
@@ -47,7 +48,12 @@ function App() {
         'Content-Type': 'application/json'
       },
     }).then(function(response){
+      console.log(response);
       var res = response.data;
+      if(res == null) {
+        setErrorMsg("City not found!");
+        return;
+      }
       setSearchCards(res.forecast);
     }).catch(function(error) {
       setSearchCards([]);
@@ -141,6 +147,7 @@ function App() {
         <h1>Already saved a location? Look it up here!</h1>
         <br /><input type="input" className="input" placeholder="Search" value={search} onChange={searchHandler}/>
         <button type="button" className="loadBtn" onClick={loadForecasts}>Load Forecasts</button>
+        {errorMsg && <label>Unable to find city in the database</label>}
         <div id="resultContainer">
           <ul className="resultList">
             {searchCards.map((card) => (
@@ -163,7 +170,6 @@ function App() {
           <button onClick={deleteForecast}>Delete</button>
         </div>}
       </div>
-      
     </div>
   );
 }
